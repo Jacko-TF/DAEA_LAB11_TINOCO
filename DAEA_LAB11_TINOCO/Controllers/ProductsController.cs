@@ -22,7 +22,7 @@ namespace DAEA_LAB11_TINOCO.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.Products != null ? 
-                          View(await _context.Products.ToListAsync()) :
+                          View(await _context.Products.Where(c => c.Active == true).ToListAsync()) :
                           Problem("Entity set 'MarketContext.Products'  is null.");
         }
 
@@ -147,7 +147,8 @@ namespace DAEA_LAB11_TINOCO.Controllers
             var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
-                _context.Products.Remove(product);
+                product.Active = false;
+                _context.Products.Update(product);
             }
             
             await _context.SaveChangesAsync();

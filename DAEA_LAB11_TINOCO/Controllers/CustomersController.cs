@@ -22,7 +22,7 @@ namespace DAEA_LAB11_TINOCO.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.Customers != null ? 
-                          View(await _context.Customers.ToListAsync()) :
+                          View(await _context.Customers.Where(c => c.Active == true).ToListAsync()) :
                           Problem("Entity set 'MarketContext.Customers'  is null.");
         }
 
@@ -147,7 +147,8 @@ namespace DAEA_LAB11_TINOCO.Controllers
             var customer = await _context.Customers.FindAsync(id);
             if (customer != null)
             {
-                _context.Customers.Remove(customer);
+                customer.Active = false; // Cambia el campo Active a false
+                _context.Customers.Update(customer); // Marca el objeto como modificado
             }
             
             await _context.SaveChangesAsync();
